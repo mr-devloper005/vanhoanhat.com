@@ -1,74 +1,94 @@
 /*
   Editable global theme layer.
 
-  Safe for UI editors / AI tools:
-  - Full site background
-  - Global text color
-  - Editable-only typography
-  - Selection color
-  - Scrollbar feel
-  - Article body typography accents
-
-  Do not add data fetching, scripts, or route logic here.
+  Editorial newspaper aesthetic: warm off-white surfaces, Merriweather display,
+  Inter body, Libre Baskerville emphasis, near-sharp radii, restrained blue
+  accent, warm-ochre link underline. No shadows — weight comes from whitespace
+  and serif hierarchy.
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
-
-/* Per-task display + body typefaces (consumed via task-themes.ts). */
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&family=Syne:wght@500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Inter:wght@400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
 
 body {
   background-color: var(--slot4-page-bg) !important;
   color: var(--slot4-page-text) !important;
-  background-image: var(--slot4-body-gradient) !important;
+  background-image: none !important;
 }
 
 .editable-site-root {
-  /* Yelp-style clean sans, used for both display and body. */
-  --editable-font-display: 'Inter', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --editable-font-display: 'Merriweather', Georgia, 'Times New Roman', serif;
   --editable-font-body: 'Inter', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
-  /* Premium easing curve used across every hover + transition. */
+  --editable-font-emphasis: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
   --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
   font-family: var(--editable-font-body);
+  font-feature-settings: 'ss01', 'kern';
 }
 
-/*
-  Site-wide premium motion.
-
-  1. Unify the easing of every existing transition/hover to one refined curve.
-  2. Add a smooth "post open" entry animation that replays on each navigation
-     (driven by EditablePageMotion remounting the content per route).
-  Durations stay defined per-component via Tailwind utilities.
-*/
 .editable-site-root *,
 .editable-site-root *::before,
 .editable-site-root *::after {
   transition-timing-function: var(--ease-premium);
 }
 
-@keyframes editable-enter {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 22px, 0);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+.editable-display {
+  font-family: var(--editable-font-display);
+}
+.editable-emphasis {
+  font-family: var(--editable-font-emphasis);
+  font-style: italic;
+}
+.editable-label {
+  font-family: var(--editable-font-body);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 12px;
 }
 
-/* The content region rises + fades on open; `backwards` clears the transform
-   afterwards so sticky sidebars keep working. */
+/* Warm-ochre editorial highlight — reference uses this only as an underline
+   swatch behind link text on hover. */
+.editable-underline-ochre {
+  background-image: linear-gradient(180deg, transparent 62%, #ecdea6 62%, #ecdea6 92%, transparent 92%);
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  transition: background-size 0.45s var(--ease-premium);
+}
+.editable-underline-ochre:hover,
+.group:hover .editable-underline-ochre {
+  background-size: 100% 100%;
+}
+
+/* Page-enter animation (kept from prior layer). */
+@keyframes editable-enter {
+  from { opacity: 0; transform: translate3d(0, 22px, 0); }
+  to   { opacity: 1; transform: none; }
+}
 .editable-enter > * {
   animation: editable-enter 0.6s var(--ease-premium) backwards;
   will-change: transform, opacity;
 }
 
+/* Scroll-reveal utility used by <EditableReveal />. Hidden state applied only
+   after JS mount so no-JS visitors still see content. */
+.editable-reveal {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.7s var(--ease-premium), transform 0.7s var(--ease-premium);
+  will-change: opacity, transform;
+}
+.editable-reveal[data-hidden='true'] {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+}
+.editable-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .editable-enter > * {
-    animation: none;
-  }
+  .editable-enter > * { animation: none; }
+  .editable-reveal,
+  .editable-reveal[data-hidden='true'] { transform: none !important; }
   .editable-site-root *,
   .editable-site-root *::before,
   .editable-site-root *::after {
@@ -80,10 +100,10 @@ body {
 .editable-site-root h1,
 .editable-site-root h2,
 .editable-site-root h3,
-.editable-site-root h4,
-.editable-display {
+.editable-site-root h4 {
   font-family: var(--editable-font-display);
   letter-spacing: -0.02em;
+  color: var(--slot4-page-text);
 }
 
 .editable-site-root p,
@@ -97,27 +117,41 @@ body {
 }
 
 ::selection {
-  background: color-mix(in oklab, var(--slot4-accent-fill) 28%, transparent);
+  background: color-mix(in oklab, var(--slot4-accent-fill) 26%, transparent);
   color: var(--slot4-page-text);
 }
 
 ::-webkit-scrollbar-track {
   background: color-mix(in oklab, var(--slot4-page-bg) 88%, black);
 }
-
 ::-webkit-scrollbar-thumb {
   background: color-mix(in oklab, var(--slot4-accent) 45%, transparent);
   border-radius: 999px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
   background: color-mix(in oklab, var(--slot4-accent) 68%, transparent);
 }
 
-.article-content h2 {
-  color: var(--slot4-accent);
+.article-content {
+  font-family: var(--editable-font-display);
+  font-weight: 300;
+  color: var(--slot4-page-text);
 }
-
+.article-content h2,
+.article-content h3 {
+  font-family: var(--editable-font-display);
+  color: var(--slot4-page-text);
+}
 .article-content a {
   color: var(--slot4-accent-fill);
+  text-decoration: none;
+  background-image: linear-gradient(180deg, transparent 62%, #ecdea6 62%, #ecdea6 92%, transparent 92%);
+  background-repeat: no-repeat;
+}
+.article-content blockquote {
+  font-family: var(--editable-font-emphasis);
+  font-style: italic;
+  border-left: 3px solid var(--slot4-accent);
+  padding-left: 1.25rem;
+  color: var(--slot4-muted-text);
 }
