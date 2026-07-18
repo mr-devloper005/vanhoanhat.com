@@ -6,21 +6,29 @@ type LoadingStateProps = {
 }
 
 function PulseBlock({ className }: { className?: string }) {
-  return <div className={cn('animate-pulse rounded-2xl bg-current/10', className)} />
+  return <div className={cn('animate-pulse bg-[var(--editable-border)] opacity-70', className)} />
 }
 
-export function PageLoadingState({ label = 'Loading page', className }: LoadingStateProps) {
+export function PageLoadingState({ label = 'Loading', className }: LoadingStateProps) {
   return (
-    <div className={cn('mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8', className)} aria-live="polite" aria-busy="true">
-      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-current/50">{label}</p>
-      <PulseBlock className="mt-5 h-12 w-3/4 max-w-3xl" />
+    <div
+      className={cn(
+        'mx-auto w-full max-w-[var(--editable-container)] px-5 py-16 sm:px-6 sm:py-24 lg:px-8',
+        className
+      )}
+      aria-live="polite"
+      aria-busy="true"
+    >
+      <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--slot4-accent)]">{label}</p>
+      <PulseBlock className="mt-8 h-14 w-3/4 max-w-3xl" />
       <PulseBlock className="mt-4 h-5 w-2/3 max-w-2xl" />
-      <div className="mt-8 grid gap-4 md:grid-cols-3">
+      <div className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
         {[0, 1, 2].map((item) => (
-          <div key={item} className="rounded-[2rem] border border-current/10 p-5">
-            <PulseBlock className="h-44 w-full" />
-            <PulseBlock className="mt-5 h-5 w-4/5" />
-            <PulseBlock className="mt-3 h-4 w-3/5" />
+          <div key={item}>
+            <PulseBlock className="aspect-[16/9] w-full" />
+            <PulseBlock className="mt-5 h-4 w-1/3" />
+            <PulseBlock className="mt-3 h-6 w-5/6" />
+            <PulseBlock className="mt-3 h-4 w-2/3" />
           </div>
         ))}
       </div>
@@ -30,29 +38,47 @@ export function PageLoadingState({ label = 'Loading page', className }: LoadingS
 
 export function CardGridLoadingState({ count = 6, className }: LoadingStateProps & { count?: number }) {
   return (
-    <div className={cn('grid gap-5 sm:grid-cols-2 lg:grid-cols-3', className)} aria-live="polite" aria-busy="true">
+    <div
+      className={cn('grid gap-10 sm:grid-cols-2 lg:grid-cols-3', className)}
+      aria-live="polite"
+      aria-busy="true"
+    >
       {Array.from({ length: count }).map((_, index) => (
-        <div key={index} className="rounded-[1.75rem] border border-current/10 p-4">
-          <PulseBlock className="h-40 w-full" />
-          <PulseBlock className="mt-4 h-5 w-5/6" />
+        <div key={index}>
+          <PulseBlock className="aspect-[16/9] w-full" />
+          <PulseBlock className="mt-5 h-4 w-1/3" />
+          <PulseBlock className="mt-3 h-6 w-5/6" />
           <PulseBlock className="mt-3 h-4 w-2/3" />
-          <PulseBlock className="mt-6 h-9 w-32 rounded-full" />
         </div>
       ))}
     </div>
   )
 }
 
-export function DetailLoadingState({ label = 'Loading detail', className }: LoadingStateProps) {
+export function DetailLoadingState({ label = 'Loading entry', className }: LoadingStateProps) {
   return (
-    <div className={cn('mx-auto grid w-full max-w-6xl gap-8 px-4 py-12 lg:grid-cols-[0.8fr_1.2fr]', className)} aria-live="polite" aria-busy="true">
-      <PulseBlock className="h-80 w-full rounded-[2rem]" />
+    <div
+      className={cn(
+        'mx-auto grid w-full max-w-[var(--editable-container)] gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-[minmax(0,1fr)_340px] lg:px-8',
+        className
+      )}
+      aria-live="polite"
+      aria-busy="true"
+    >
       <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-current/50">{label}</p>
-        <PulseBlock className="mt-5 h-12 w-4/5" />
-        <PulseBlock className="mt-5 h-4 w-full" />
-        <PulseBlock className="mt-3 h-4 w-5/6" />
-        <PulseBlock className="mt-3 h-4 w-2/3" />
+        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--slot4-accent)]">{label}</p>
+        <PulseBlock className="mt-6 h-16 w-4/5 max-w-3xl" />
+        <PulseBlock className="mt-6 aspect-[21/9] w-full" />
+        <div className="mt-10 space-y-3">
+          <PulseBlock className="h-4 w-full" />
+          <PulseBlock className="h-4 w-5/6" />
+          <PulseBlock className="h-4 w-4/6" />
+          <PulseBlock className="h-4 w-3/6" />
+        </div>
+      </div>
+      <div className="space-y-6">
+        <PulseBlock className="h-64 w-full" />
+        <PulseBlock className="h-48 w-full" />
       </div>
     </div>
   )
